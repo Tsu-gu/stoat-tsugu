@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Stoat Chat
+Exec=stoat-tsugu
+Icon=${SNAP}/meta/gui/stoat-tsugu.png
+Comment=Stoat chat, formerly Revolt
+Terminal=false
+Type=Application
+MimeType=x-content/unix-software;

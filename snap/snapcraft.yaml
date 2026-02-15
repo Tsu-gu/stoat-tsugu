@@ -1,0 +1,51 @@
+name: stoat-tsugu
+base: core24
+version: '1.1.12'
+summary: The chat app where you are the main character 
+description: |
+  Text channels, done right. Attach images.  @mention users. Link to websites. Welcome to the 21st century.
+
+grade: stable
+confinement: strict
+
+platforms:
+  amd64:
+
+
+parts:
+  stoat-tsugu:
+    source: https://github.com/stoatchat/for-desktop/releases/download/v${SNAPCRAFT_PROJECT_VERSION}/Stoat-linux-x64-${SNAPCRAFT_PROJECT_VERSION}.zip
+    plugin: dump
+    source-type: zip
+    override-build: |
+      craftctl default
+      chmod -R a+rX $SNAPCRAFT_PART_INSTALL/
+    stage-packages:
+      - libproxy1v5
+
+apps:
+  stoat-tsugu:
+    command: Stoat-linux-x64/stoat-desktop --no-sandbox --disable-dev-shm-usage
+    extensions: [gnome]
+    environment:
+      HOME: "$SNAP_USER_DATA"
+      TMPDIR: "$XDG_RUNTIME_DIR"
+      ELECTRON_DISABLE_SANDBOX: "1"
+      GTK_MODULES: ""
+      GTK_PATH: ""
+      LD_LIBRARY_PATH: >
+       $SNAP/Stoat-linux-x64:
+       $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libproxy:
+       $LD_LIBRARY_PATH
+    plugs:
+      - network
+      - network-bind
+      - home
+      - removable-media
+      - desktop
+      - desktop-legacy
+      - audio-playback
+      - x11
+      - wayland
+      - unity7
+      - password-manager-service
