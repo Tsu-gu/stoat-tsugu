@@ -45,6 +45,7 @@ apps:
       - desktop
       - desktop-legacy
       - audio-playback
+      - audio-record
       - x11
       - wayland
       - unity7
