@@ -1,31 +1,38 @@
 name: stoat-tsugu
 base: core24
 version: '1.3.0'
-summary: The chat app where you are the main character 
+summary: The chat app where you are the main character
 description: |
   Text channels, done right. Attach images.  @mention users. Link to websites. Welcome to the 21st century.
-
 grade: stable
 confinement: strict
 
 platforms:
   amd64:
-
+  arm64:
 
 parts:
   stoat-tsugu:
-    source: https://github.com/stoatchat/for-desktop/releases/download/v${SNAPCRAFT_PROJECT_VERSION}/Stoat-linux-x64-${SNAPCRAFT_PROJECT_VERSION}.zip
+    source:
+      - on amd64 to amd64: https://github.com/stoatchat/for-desktop/releases/download/v${SNAPCRAFT_PROJECT_VERSION}/Stoat-linux-x64-${SNAPCRAFT_PROJECT_VERSION}.zip
+      - on arm64 to arm64: https://github.com/stoatchat/for-desktop/releases/download/v${SNAPCRAFT_PROJECT_VERSION}/Stoat-linux-arm64-${SNAPCRAFT_PROJECT_VERSION}.zip
     plugin: dump
     source-type: zip
     override-build: |
       craftctl default
-      chmod -R a+rX $SNAPCRAFT_PART_INSTALL/
+      # Extract the resulting directory to a new standard directory the app can be launched from
+      if [ -d "$SNAPCRAFT_PART_INSTALL/Stoat-linux-x64" ]; then
+        mv "$SNAPCRAFT_PART_INSTALL/Stoat-linux-x64" "$SNAPCRAFT_PART_INSTALL/Stoat-linux"
+      elif [ -d "$SNAPCRAFT_PART_INSTALL/Stoat-linux-arm64" ]; then
+        mv "$SNAPCRAFT_PART_INSTALL/Stoat-linux-arm64" "$SNAPCRAFT_PART_INSTALL/Stoat-linux"
+      fi
+      chmod -R a+rX "$SNAPCRAFT_PART_INSTALL/"
     stage-packages:
       - libproxy1v5
 
 apps:
   stoat-tsugu:
-    command: Stoat-linux-x64/stoat-desktop --no-sandbox --disable-dev-shm-usage
+    command: Stoat-linux/stoat-desktop --no-sandbox --disable-dev-shm-usage
     extensions: [gnome]
     environment:
       HOME: "$SNAP_USER_DATA"
@@ -34,9 +41,9 @@ apps:
       GTK_MODULES: ""
       GTK_PATH: ""
       LD_LIBRARY_PATH: >
-       $SNAP/Stoat-linux-x64:
-       $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libproxy:
-       $LD_LIBRARY_PATH
+        $SNAP/Stoat-linux:
+        $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libproxy:
+        $LD_LIBRARY_PATH
     plugs:
       - network
       - network-bind
