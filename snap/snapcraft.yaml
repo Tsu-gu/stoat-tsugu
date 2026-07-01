@@ -1,6 +1,6 @@
 name: stoat-tsugu
 base: core24
-version: '1.3.0'
+version: '1.4.0'
 summary: The chat app where you are the main character
 description: |
   Text channels, done right. Attach images.  @mention users. Link to websites. Welcome to the 21st century.
